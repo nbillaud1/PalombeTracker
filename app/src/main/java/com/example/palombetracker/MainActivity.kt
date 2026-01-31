@@ -56,7 +56,6 @@ import java.lang.System.console
 // Simple state storage (resets on app restart as per this simple implementation)
 val pigeonKills = mutableStateListOf<PigeonKill>()
 val flights = mutableStateListOf<Flight>()
-
 val hunters = mutableStateListOf("Paul", "Gilles", "Régis")
 
 class MainActivity : ComponentActivity() {
