@@ -1,5 +1,5 @@
 package com.example.palombetracker
-// TODO : le compteur par chasseur
+
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -17,7 +17,10 @@ import java.time.LocalDate
 // Simple state storage (resets on app restart as per this simple implementation)
 val pigeonKills = mutableStateListOf<PigeonKill>()
 val flights = mutableStateListOf<Flight>()
+val registeredHunters = mutableStateListOf<Hunter>()
 val hunters = mutableStateListOf("Paul", "Gilles", "Régis")
+
+val currentYear = Year(LocalDate.now().year, flights, registeredHunters, pigeonKills)
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,7 +40,7 @@ fun AppNavigation() {
 
     NavHost(
         navController = navController,
-        startDestination = "homeScreen"
+        startDestination = "yearScreen"
     ) {
         composable(route = "woodPigeonScreen") {
             WoodPigeonScreen(navController = navController)
@@ -48,8 +51,8 @@ fun AppNavigation() {
         composable(route = "newHunterScreen") {
             NewHunterScreen(navController = navController)
         }
-        composable(route = "homeScreen") {
-            HomeScreen(navController = navController, year = LocalDate.now().year)
+        composable(route = "yearScreen") {
+            YearScreen(navController = navController, year = LocalDate.now().year)
         }
         composable(
             route = "homeScreen/{year}",

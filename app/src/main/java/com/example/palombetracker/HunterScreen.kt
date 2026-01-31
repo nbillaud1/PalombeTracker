@@ -1,5 +1,5 @@
 package com.example.palombetracker
-
+// TODO mettre le kill count en place
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -10,7 +10,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Button
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -30,7 +32,7 @@ import androidx.navigation.NavHostController
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NewHunterScreen(navController: NavHostController) {
-    var addedHunter by remember { mutableStateOf(false) }
+    var hunterAdded by remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = {
@@ -55,7 +57,7 @@ fun NewHunterScreen(navController: NavHostController) {
             var hunterToAdd by remember { mutableStateOf("") }
             OutlinedTextField(
                 value = hunterToAdd,
-                onValueChange = {it -> hunterToAdd = it; addedHunter = false},
+                onValueChange = {it -> hunterToAdd = it; hunterAdded = false},
                 label = { Text("Nom du nouveau chasseur") },
                 modifier = Modifier.fillMaxWidth()
             )
@@ -64,7 +66,7 @@ fun NewHunterScreen(navController: NavHostController) {
                     if(hunterToAdd.isNotBlank()) {
                         hunters.add(hunterToAdd)
                         hunterToAdd = ""
-                        addedHunter = true
+                        hunterAdded = true
                     }
                 },
                 modifier = Modifier.height(56.dp)
@@ -74,8 +76,17 @@ fun NewHunterScreen(navController: NavHostController) {
 
             Spacer(modifier = Modifier.height(40.dp))
 
-            if(addedHunter) {
+            if(hunterAdded) {
                 Text("Chasseur ajouté avec succès !", style = MaterialTheme.typography.bodyLarge)
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
+            HorizontalDivider()
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Text("Liste des chasseurs déjà présents", style = MaterialTheme.typography.titleLarge)
+            hunters.forEach { option ->
+                Text(" - $option", style = MaterialTheme.typography.bodyLarge)
             }
         }
     }

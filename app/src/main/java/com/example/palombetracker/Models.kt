@@ -1,7 +1,5 @@
 package com.example.palombetracker
 
-import android.R
-import java.sql.Date
 import java.time.LocalDate
 
 data class Flight(
@@ -15,7 +13,7 @@ data class Flight(
 
 data class Hunter(
     val name: String,
-    var killCount: R.integer,
+    var killCount: Int = 0,
 )
 
 data class PigeonKill(
