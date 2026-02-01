@@ -86,9 +86,9 @@ fun WoodPigeonScreen(navController: NavHostController) {
                 ) {
                     hunters.forEach { option ->
                         DropdownMenuItem(
-                            text = { Text(option) },
+                            text = { Text(option.name) },
                             onClick = {
-                                selectedHunter = option
+                                selectedHunter = option.name
                                 expanded = false
                             }
                         )

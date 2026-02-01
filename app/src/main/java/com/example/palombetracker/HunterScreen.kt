@@ -10,7 +10,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Button
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -54,18 +53,18 @@ fun NewHunterScreen(navController: NavHostController) {
         ) {
             Text("Ajouter un nouveau chasseur", style = MaterialTheme.typography.titleLarge)
 
-            var hunterToAdd by remember { mutableStateOf("") }
+            var newHunterName by remember { mutableStateOf("") }
             OutlinedTextField(
-                value = hunterToAdd,
-                onValueChange = {it -> hunterToAdd = it; hunterAdded = false},
+                value = newHunterName,
+                onValueChange = {it -> newHunterName = it; hunterAdded = false},
                 label = { Text("Nom du nouveau chasseur") },
                 modifier = Modifier.fillMaxWidth()
             )
             Button(
                 onClick = {
-                    if(hunterToAdd.isNotBlank()) {
-                        hunters.add(hunterToAdd)
-                        hunterToAdd = ""
+                    if(newHunterName.isNotBlank()) {
+                        hunters.add(Hunter(newHunterName, 0))
+                        newHunterName = ""
                         hunterAdded = true
                     }
                 },
@@ -86,7 +85,7 @@ fun NewHunterScreen(navController: NavHostController) {
 
             Text("Liste des chasseurs déjà présents", style = MaterialTheme.typography.titleLarge)
             hunters.forEach { option ->
-                Text(" - $option", style = MaterialTheme.typography.bodyLarge)
+                Text(" - ${option.name} avec ${option.killCount} palombes tuées", style = MaterialTheme.typography.bodyLarge)
             }
         }
     }

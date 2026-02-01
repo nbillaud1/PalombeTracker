@@ -1,5 +1,6 @@
 package com.example.palombetracker
-
+//TODO : savoir cmb de pigeons ont été laché / nb palombes posées
+// TODO : savoir si le vol a été travaillé
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -43,7 +44,12 @@ import java.time.LocalDate
 @Composable
 fun FlightScreen(navController: NavHostController) {
     var didLand by remember { mutableStateOf(false) }
+    var flightWorked by remember { mutableStateOf(false) }
+    var pFromCage by remember { mutableStateOf(false) }
+    var pFromTower by remember { mutableStateOf(false) }
+
     var selectedWindDirection by remember { mutableStateOf("") }
+    var flightHour by remember { mutableStateOf("") }
 
     Scaffold(
         topBar = {
@@ -64,7 +70,55 @@ fun FlightScreen(navController: NavHostController) {
                 .padding(16.dp)
         ) {
             item {
-                Text("Enregistrer un vol", style = MaterialTheme.typography.titleLarge)
+                Text("Enregistrer un vol :", style = MaterialTheme.typography.titleLarge)
+
+                Spacer(modifier = Modifier.height(32.dp))
+
+                Text("Sélectionnez l'heure du vol : ")
+
+                /*val formatter = DateTimeFormatter.ofPattern("HH:mm")
+                val times = remember {
+                    generateSequence(LocalTime.MIN) { it.plusMinutes(30) }
+                        .takeWhile { it.isBefore(LocalTime.MAX) }
+                        .map { it.format(formatter) }
+                        .toList()
+                }
+
+                var expandedTime by remember { mutableStateOf(false) }
+                var flightHour by remember { mutableStateOf("") }
+
+                ExposedDropdownMenuBox(
+                    expanded = expandedTime,
+                    onExpandedChange = { expandedTime = !expandedTime }
+                ) {
+                    TextField(
+                        modifier = Modifier
+                            .menuAnchor()
+                            .fillMaxWidth(),
+                        value = flightHour,
+                        onValueChange = {},
+                        readOnly = true,
+                        label = { Text("Heure du vol") },
+                        trailingIcon = {
+                            ExposedDropdownMenuDefaults.TrailingIcon(expanded = expandedTime)
+                        }
+                    )
+
+                    ExposedDropdownMenu(
+                        expanded = expandedTime,
+                        onDismissRequest = { expandedTime = false }
+                    ) {
+                        times.forEach { time ->
+                            DropdownMenuItem(
+                                text = { Text(time) },
+                                onClick = {
+                                    flightHour = time
+                                    expandedTime = false
+                                }
+                            )
+                        }
+                    }
+                }*/
 
                 Spacer(modifier = Modifier.height(32.dp))
 
@@ -75,7 +129,7 @@ fun FlightScreen(navController: NavHostController) {
                         .clickable { didLand = !didLand }
                 ) {
                     Text(
-                        text = if (didLand) "Le vol s'est posé ! " else "Le vol ne s'est pas posé...",
+                        text = "Le vol s'est posé ! ",
                         modifier = Modifier.weight(1f)
                     )
                     Switch(
@@ -83,10 +137,25 @@ fun FlightScreen(navController: NavHostController) {
                         onCheckedChange = { didLand = it }
                     )
                 }
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable { didLand = !didLand }
+                ) {
+                    Text(
+                        text = "Le vol ne s'est pas posé...",
+                        modifier = Modifier.weight(1f)
+                    )
+                    Switch(
+                        checked = !didLand,
+                        onCheckedChange = { didLand = it }
+                    )
+                }
 
                 Spacer(modifier = Modifier.height(20.dp))
 
-                val options = listOf("Nord", "Sud", "Est", "Ouest", "Nord-Est", "Sud-Ouest", "Nord-Ouest", "Sud-Est", "Inconnue")
+                val windDirection = listOf("Nord", "Sud", "Est", "Ouest", "Nord-Est", "Sud-Ouest", "Nord-Ouest", "Sud-Est", "Inconnue")
                 var expanded by remember { mutableStateOf(false) }
                 var selectedWindDirection by remember { mutableStateOf("") }
 
@@ -111,7 +180,7 @@ fun FlightScreen(navController: NavHostController) {
                         expanded = expanded,
                         onDismissRequest = { expanded = false }
                     ) {
-                        options.forEach { option ->
+                        windDirection.forEach { option ->
                             DropdownMenuItem(
                                 text = { Text(option) },
                                 onClick = {
@@ -124,13 +193,66 @@ fun FlightScreen(navController: NavHostController) {
                 }
 
                 Spacer(modifier = Modifier.height(20.dp))
+
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable { flightWorked = !flightWorked }
+                ) {
+                    Text(
+                        text = "Les pigeon ont été lachés : ",
+                        modifier = Modifier.weight(1f)
+                    )
+                    Switch(
+                        checked = flightWorked,
+                        onCheckedChange = { flightWorked = it }
+                    )
+                }
+
+                if(flightWorked) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable { pFromCage = !pFromCage }
+                    ) {
+                        Text(
+                            text = "Depuis autre part (préciser à Nathan d'où) ",
+                            modifier = Modifier.weight(1f)
+                        )
+                        Switch(
+                            checked = pFromCage,
+                            onCheckedChange = { pFromCage = it }
+                        )
+                    }
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable { pFromTower = !pFromTower }
+                    ) {
+                        Text(
+                            text = "Depuis la palombière",
+                            modifier = Modifier.weight(1f)
+                        )
+                        Switch(
+                            checked = pFromTower,
+                            onCheckedChange = { pFromTower = it }
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(20.dp))
                 //TODO
                 Button(
-                    enabled = selectedWindDirection.isNotBlank(),
+                    enabled = selectedWindDirection.isNotBlank(), //&& flightHour.isNotBlank()
                     onClick = {
-                        flights.add(Flight(didLand, selectedWindDirection,
-                            LocalDate.now(), System.currentTimeMillis(), false, false))
+                        flights.add(Flight(didLand, selectedWindDirection, LocalDate.now(), System.currentTimeMillis(), pFromCage, pFromTower, flightWorked))
                         didLand = false
+                        pFromCage = false
+                        pFromTower = false
+                        flightWorked = false
                         selectedWindDirection = ""
                     },
                     modifier = Modifier.fillMaxWidth().height(56.dp)
@@ -148,8 +270,18 @@ fun FlightScreen(navController: NavHostController) {
             items(flights.reversed()) { flight ->
                 Card(modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)) {
                     Column(modifier = Modifier.padding(16.dp)) {
-                        Text("Vent: ${flight.windDirection}", fontWeight = FontWeight.Bold)
+                        Text("Le ${flight.date.dayOfMonth}/${flight.date.monthValue}/${flight.date.year}", fontWeight = FontWeight.Bold) // à ${flight.hour}
+                        Text("Vent: ${flight.windDirection}")
                         Text("Posé: ${if (flight.didLand) "Oui" else "Non"}")
+                        Text("Pigeons lachés : ${if (flight.flightWorked) "Oui" else "Non"}")
+                        if(flight.flightWorked){
+                            if(flight.pFromCage){
+                                Text("  - Depuis autre part (dire à Nathan d'où)")
+                            }
+                            if (flight.pFromTower) {
+                                Text("  - Depuis la Palombière")
+                            }
+                        }
                     }
                 }
             }

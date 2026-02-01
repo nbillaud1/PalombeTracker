@@ -18,7 +18,7 @@ import java.time.LocalDate
 val pigeonKills = mutableStateListOf<PigeonKill>()
 val flights = mutableStateListOf<Flight>()
 val registeredHunters = mutableStateListOf<Hunter>()
-val hunters = mutableStateListOf("Paul", "Gilles", "Régis")
+val hunters = mutableStateListOf<Hunter>(Hunter("Paul", 0), Hunter("Gilles", 0), Hunter("Régis", 0))
 
 val currentYear = Year(LocalDate.now().year, flights, registeredHunters, pigeonKills)
 

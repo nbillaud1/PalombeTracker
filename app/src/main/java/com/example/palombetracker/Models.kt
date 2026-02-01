@@ -1,5 +1,6 @@
 package com.example.palombetracker
 
+import android.adservices.ondevicepersonalization.IsolatedWorker
 import java.time.LocalDate
 
 data class Flight(
@@ -9,6 +10,7 @@ data class Flight(
     val heure: Long,
     val pFromCage: Boolean,
     val pFromTower: Boolean,
+    val flightWorked: Boolean,
 )
 
 data class Hunter(
