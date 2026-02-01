@@ -1,5 +1,4 @@
 package com.example.palombetracker
-// TODO mettre le kill count en place
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize

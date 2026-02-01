@@ -1,7 +1,7 @@
 package com.example.palombetracker
 
-import android.adservices.ondevicepersonalization.IsolatedWorker
 import java.time.LocalDate
+import java.time.LocalDateTime
 
 data class Flight(
     val didLand: Boolean,
@@ -20,9 +20,9 @@ data class Hunter(
 
 data class PigeonKill(
     val isolated: Boolean, // if not isolated, ask for the flight informations
-    val flight: Flight,
-    val hunter: Hunter,
-    val heure: Long,
+    val flight: Flight?,
+    val hunter: Hunter?,
+    val heure: LocalDateTime?,
     val date: LocalDate,
 )
 
