@@ -11,31 +11,51 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.palombetracker.ui.screen.FlightScreen
+import com.example.palombetracker.ui.models.Flight
+import com.example.palombetracker.ui.models.Hunter
+import com.example.palombetracker.ui.models.PigeonKill
+import com.example.palombetracker.ui.models.Year
+import com.example.palombetracker.ui.screen.HomeScreen
+import com.example.palombetracker.ui.screen.RecapScreen
+import com.example.palombetracker.ui.screen.WoodPigeonScreen
+import com.example.palombetracker.ui.screen.YearScreen
 import com.example.palombetracker.ui.theme.PalombeTrackerTheme
 import java.time.LocalDate
+import androidx.room.Room
+import com.example.palombetracker.ui.models.AppDatabase
+import com.example.palombetracker.ui.models.HunterDao
 
 // Simple state storage (resets on app restart as per this simple implementation)
 val pigeonKills = mutableStateListOf<PigeonKill>()
 val flights = mutableStateListOf<Flight>()
 val registeredHunters = mutableStateListOf<Hunter>()
-val hunters = mutableStateListOf<Hunter>(Hunter("Paul", 0), Hunter("Gilles", 0), Hunter("Régis", 0))
-
-val currentYear = Year(LocalDate.now().year, flights, registeredHunters, pigeonKills)
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
+        val db = Room.databaseBuilder(
+            applicationContext,
+            AppDatabase::class.java, "palombes-tracker-db"
+        )
+            .allowMainThreadQueries() // Ajoute ça UNIQUEMENT pour tes tests du début
+            .build()
+
+        val hunterDao = db.hunterDao()
+
+        // Exemple pour lire les chasseurs :
+        val hunters = hunterDao.getAllHunters()
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
             PalombeTrackerTheme {
-                AppNavigation()
+                AppNavigation(db.hunterDao())
             }
         }
     }
 }
 
 @Composable
-fun AppNavigation() {
+fun AppNavigation(hunterDao: HunterDao) {
     val navController = rememberNavController()
 
     NavHost(
@@ -49,7 +69,7 @@ fun AppNavigation() {
             FlightScreen(navController = navController)
         }
         composable(route = "newHunterScreen") {
-            NewHunterScreen(navController = navController)
+            NewHunterScreen(navController = navController, hunterDao = hunterDao)
         }
         composable(route = "yearScreen") {
             YearScreen(navController = navController, year = LocalDate.now().year)

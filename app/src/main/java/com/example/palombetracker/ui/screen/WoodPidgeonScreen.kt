@@ -1,4 +1,4 @@
-package com.example.palombetracker
+package com.example.palombetracker.ui.screen
 // TODO : pouvoir sélectionner un vol si la palombe n'est pas isolée ou pouvoir crér un vol si la palombe n'est pas isolée
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -38,6 +38,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.example.palombetracker.ui.models.PigeonKill
+import com.example.palombetracker.registeredHunters
+import com.example.palombetracker.pigeonKills
 import java.time.LocalDate
 import java.time.LocalDateTime
 
@@ -91,7 +94,7 @@ fun WoodPigeonScreen(navController: NavHostController) {
                     expanded = expanded,
                     onDismissRequest = { expanded = false }
                 ) {
-                    hunters.forEach { option ->
+                    registeredHunters.forEach { option ->
                         DropdownMenuItem(
                             text = { Text(option.name) },
                             onClick = {
@@ -125,10 +128,16 @@ fun WoodPigeonScreen(navController: NavHostController) {
             Button(
                 onClick = {
                     if (selectedHunter.isNotBlank()) {
-                        pigeonKills.add(PigeonKill(
-                            isolated, null, hunters.find { it.name == selectedHunter }, LocalDateTime.now(), LocalDate.now()
-                        ))
-                        val hunterToAddKill = hunters.find { it.name == selectedHunter }
+                        pigeonKills.add(
+                            PigeonKill(
+                                isolated,
+                                null,
+                                registeredHunters.find { it.name == selectedHunter },
+                                LocalDateTime.now(),
+                                LocalDate.now()
+                            )
+                        )
+                        val hunterToAddKill = registeredHunters.find { it.name == selectedHunter }
                         if (hunterToAddKill != null){
                             hunterToAddKill.killCount++
                         }

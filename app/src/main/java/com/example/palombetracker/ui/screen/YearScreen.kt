@@ -1,6 +1,5 @@
-package com.example.palombetracker
+package com.example.palombetracker.ui.screen
 
-import android.service.autofill.OnClickAction
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer

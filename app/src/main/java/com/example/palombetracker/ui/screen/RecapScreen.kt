@@ -1,4 +1,4 @@
-package com.example.palombetracker
+package com.example.palombetracker.ui.screen
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

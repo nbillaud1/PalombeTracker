@@ -1,4 +1,4 @@
-package com.example.palombetracker
+package com.example.palombetracker.ui.screen
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -25,6 +25,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.example.palombetracker.flights
+import com.example.palombetracker.pigeonKills
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

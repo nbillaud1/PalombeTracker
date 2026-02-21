@@ -1,6 +1,6 @@
-package com.example.palombetracker
+package com.example.palombetracker.ui.screen
 //TODO : savoir cmb de pigeons ont été laché / nb palombes posées
-// TODO : savoir si le vol a été travaillé
+// TODO : savoir si le vol a été travaillé : mettre une coche Oui [] NON []. à la place du switch
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -38,6 +38,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.example.palombetracker.ui.models.Flight
+import com.example.palombetracker.flights
 import java.time.LocalDate
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -201,7 +203,7 @@ fun FlightScreen(navController: NavHostController) {
                         .clickable { flightWorked = !flightWorked }
                 ) {
                     Text(
-                        text = "Les pigeon ont été lachés : ",
+                        text = "Le vol a été travaillé ? ",
                         modifier = Modifier.weight(1f)
                     )
                     Switch(
@@ -215,30 +217,30 @@ fun FlightScreen(navController: NavHostController) {
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .clickable { pFromCage = !pFromCage }
+                            .clickable { pFromTower = !pFromTower }
                     ) {
                         Text(
-                            text = "Depuis autre part (préciser à Nathan d'où) ",
+                            text = "pigeons lachés depuis la palombière ?",
                             modifier = Modifier.weight(1f)
                         )
                         Switch(
-                            checked = pFromCage,
-                            onCheckedChange = { pFromCage = it }
+                            checked = pFromTower,
+                            onCheckedChange = { pFromTower = it }
                         )
                     }
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .clickable { pFromTower = !pFromTower }
+                            .clickable { pFromCage = !pFromCage }
                     ) {
                         Text(
-                            text = "Depuis la palombière",
+                            text = "pigeons lachés depuis autre part (préciser à Nathan d'où) ? ",
                             modifier = Modifier.weight(1f)
                         )
                         Switch(
-                            checked = pFromTower,
-                            onCheckedChange = { pFromTower = it }
+                            checked = pFromCage,
+                            onCheckedChange = { pFromCage = it }
                         )
                     }
                 }
@@ -248,7 +250,17 @@ fun FlightScreen(navController: NavHostController) {
                 Button(
                     enabled = selectedWindDirection.isNotBlank(), //&& flightHour.isNotBlank()
                     onClick = {
-                        flights.add(Flight(didLand, selectedWindDirection, LocalDate.now(), System.currentTimeMillis(), pFromCage, pFromTower, flightWorked))
+                        flights.add(
+                            Flight(
+                                didLand,
+                                selectedWindDirection,
+                                LocalDate.now(),
+                                System.currentTimeMillis(),
+                                pFromCage,
+                                pFromTower,
+                                flightWorked
+                            )
+                        )
                         didLand = false
                         pFromCage = false
                         pFromTower = false
@@ -273,13 +285,13 @@ fun FlightScreen(navController: NavHostController) {
                         Text("Le ${flight.date.dayOfMonth}/${flight.date.monthValue}/${flight.date.year}", fontWeight = FontWeight.Bold) // à ${flight.hour}
                         Text("Vent: ${flight.windDirection}")
                         Text("Posé: ${if (flight.didLand) "Oui" else "Non"}")
-                        Text("Pigeons lachés : ${if (flight.flightWorked) "Oui" else "Non"}")
+                        Text("Vol travaillé ? ${if (flight.flightWorked) "Oui" else "Non"}")
                         if(flight.flightWorked){
-                            if(flight.pFromCage){
-                                Text("  - Depuis autre part (dire à Nathan d'où)")
-                            }
                             if (flight.pFromTower) {
-                                Text("  - Depuis la Palombière")
+                                Text("  - pigeons lachés: \n    depuis la Palombière")
+                            }
+                            if(flight.pFromCage){
+                                Text("  - pigeons lachés: \n    depuis autre part (dire à Nathan d'où)")
                             }
                         }
                     }
