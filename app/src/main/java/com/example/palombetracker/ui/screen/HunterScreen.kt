@@ -3,10 +3,15 @@ package com.example.palombetracker
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.palombetracker.ui.models.Hunter
@@ -23,6 +28,8 @@ fun NewHunterScreen(navController: NavHostController, hunterDao: HunterDao) {
     val coroutineScope = rememberCoroutineScope()
 
     var hunterAdded by remember { mutableStateOf(false) }
+
+    var showValidation by remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = {
@@ -48,25 +55,28 @@ fun NewHunterScreen(navController: NavHostController, hunterDao: HunterDao) {
 
             OutlinedTextField(
                 value = newHunterName,
-                onValueChange = { newHunterName = it; hunterAdded = false },
+                onValueChange = { newHunterName = it; hunterAdded = false; showValidation = it.isNotBlank() },
                 label = { Text("Nom du nouveau chasseur") },
                 modifier = Modifier.fillMaxWidth()
             )
 
-            Button(
-                onClick = {
-                    if (newHunterName.isNotBlank()) {
-                        // 3. Insérer dans la base de données via une Coroutine
-                        coroutineScope.launch {
-                            hunterDao.insert(Hunter(name = newHunterName, killCount = 0))
-                            hunterAdded = true
-                            newHunterName = ""
+            if (showValidation) {
+                IconButton(
+                    onClick = {
+                        if (newHunterName.isNotBlank()) {
+                            // 3. Insérer dans la base de données via une Coroutine
+                            coroutineScope.launch {
+                                hunterDao.insert(Hunter(name = newHunterName, killCount = 0))
+                                hunterAdded = true
+                                showValidation = false
+                                newHunterName = ""
+                            }
                         }
-                    }
-                },
-                modifier = Modifier.height(56.dp)
-            ) {
-                Icon(Icons.Default.Add, contentDescription = null)
+                    },
+                    modifier = Modifier.height(56.dp)
+                ) {
+                    Icon(Icons.Default.CheckCircle, contentDescription = "Valider l'ajout", tint = Color(0xFF4CAF50))
+                }
             }
 
             Spacer(modifier = Modifier.height(40.dp))
@@ -81,16 +91,31 @@ fun NewHunterScreen(navController: NavHostController, hunterDao: HunterDao) {
 
             Text("Liste des chasseurs déjà présents", style = MaterialTheme.typography.titleLarge)
 
-            // 4. Afficher la vraie liste de la base de données
-            huntersList.forEach { option ->
-                Button(
-                    onClick = {
-                        coroutineScope.launch {
-                            hunterDao.delete(option)
+            // Afficher la vraie liste de la base de données
+            huntersList.forEach { hunter ->
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                ) {
+                    Text(
+                        " - ${hunter.name} avec ${hunter.killCount} palombes tuées",
+                        style = MaterialTheme.typography.bodyLarge
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
+                    IconButton(
+                        onClick = {
+                            coroutineScope.launch {
+                                hunterDao.delete(hunter)
+                            }
                         }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Delete,
+                            contentDescription = "Supprimer le chasseur",
+                            tint = MaterialTheme.colorScheme.error
+                        )
                     }
-                ){
-                    Text(" - ${option.name} avec ${option.killCount} palombes tuées", style = MaterialTheme.typography.bodyLarge)
                 }
             }
         }
